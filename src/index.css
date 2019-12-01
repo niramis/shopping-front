@@ -11,3 +11,34 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.loginform{
+  /* margin: 0 auto; */
+  width: 40%;
+  /* margin-top: 9%; */
+}
+
+.passwordform{
+  /* margin: 0 auto; */
+  width: 40%;
+  /* margin-top: 9%; */
+}
+
+.myheader{
+  margin-top: 2%;
+  margin-bottom: 2%;
+  text-align: right;
+}
+
+.center_div{
+  background-color: #ffffff;
+}
+
+.left_div{
+  background-color: #ffffff;
+}
+
+
+.footer_div{
+  background-color: bisque;
+}
