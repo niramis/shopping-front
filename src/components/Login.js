@@ -15,23 +15,51 @@ class Login extends Component {
     this.handleChangePassword = this.handleChangePassword.bind(this);
 
     this.state = {
-        authenticated: false,
-        username: "user2",
-        password: "user"
+      authenticated: false,
+      username: "user2",
+      password: "user",
+      token: ""
     };
   }
 
+  // headers: {
+  //   'Accept': 'application/json',
+  //   'Content-Type': 'application/json',
+  //   'Authorization': 'Bearer ' + this.state.clientToken,
+  //   'Host': 'api.producthunt.com'
+  // }
+
   handleClick(event){
     event.preventDefault();
-    this.props.callbackFromApp("authuser2");
-    this.setState({
-      authenticated: true,
-    });
+    this.authenticate();
+  }
+
+  authenticate(){
+    fetch(appConfig.LOGIN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        "username": this.state.username,
+        "password": this.state.password
+      }),
+    }).then(res => res.json())
+		  .then(
+			(result) => {
+          this.setState({
+            token: result.token,
+            authenticated: true,
+          });
+
+          this.props.callbackFromApp(this.state.username, result.token);
+        },
+		  )
   }
 
   handleChangeLogin(event) {
     this.setState({
-      authenticated: true
+      username: event.target.value
     });
   }
 

@@ -1,13 +1,11 @@
+import React from 'react';
+
 import { Button,Form } from 'react-bootstrap';
 import { appConfig } from '../config.js';
 
-var React = require('react');
-var Component = React.Component;
+class Register extends React.Component {	
 
-
-class Register extends Component {	
-
-  constructor(props, context) {
+  constructor(props) {
     super(props);
 
     this.registerUser = this.registerUser.bind(this);
@@ -15,9 +13,9 @@ class Register extends Component {
     this.handleChangePassword = this.handleChangePassword.bind(this);
 
     this.state = {
-        authenticated: true,
-        username: "user",
-        password: "user"
+        authenticated: false,
+        username: "",
+        password: ""
     };
   }
 
@@ -66,23 +64,23 @@ class Register extends Component {
 		<div className="passwordform">
         <h2>Register page</h2>
             <Form onSubmit={this.registerUser}>
-              <Form.Group controlId="formBasicUsername">
+              <Form.Group controlId="formBasicUsernameRegister">
                   <Form.Label>Username</Form.Label>
                   <Form.Control type="text" placeholder="Enter username" value={this.state.keywords} onChange={this.handleChangeLogin}/>
               </Form.Group>
 
-              <Form.Group controlId="formBasicPassword">
+              <Form.Group controlId="formBasicPasswordRegister">
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" placeholder="Password" value={this.state.keywords} onChange={this.handleChangePassword}/>
-              {/* </Form.Group>
-
-              <Form.Group controlId="formBasicPassword2"> */}
-                  <Form.Label>Confirm password</Form.Label>
                   <Form.Control type="password" placeholder="Password" value={this.state.keywords} onChange={this.handleChangePassword}/>
               </Form.Group>
 
+              <Form.Group controlId="formBasicPassword2">
+                  <Form.Label>Confirm password</Form.Label>
+                  <Form.Control type="password" placeholder="Confirm password" value={this.state.keywords} onChange={this.handleChangePassword}/>
+              </Form.Group>
+
               <Button variant="primary" type="submit">
-                  Register
+                Register
               </Button>
             </Form>
 

@@ -13,6 +13,9 @@ import { appConfig } from './config.js';
 import './App.css';
 import Settings from './components/Settings';
 import Admin from './components/Admin';
+import AddProduct from './components/AddProduct';
+import AddCategory from './components/AddCategory';
+import Newsletter from './components/Newsletter';
 
 // var React = require('react');
 var Component = React.Component;
@@ -22,19 +25,28 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.logout = this.logout.bind(this);
+
     this.state = {
-        authenticated: true,
+        authenticated: false,
         username: "user",
         password: "user",
+        role: "",
+        token: "",
         products: [],
         categories: [],
         cart: []
     };
   }
 
-  loginCallback = (data) => {
+  loginCallback = (username, token) => {
+    // console.log(username)
+    // console.log(token)
     this.setState({
-      username: "authuser",
+      username: username,
+      token: token,
+      authenticated: true,
+      role: "user"
     });
   }
 
@@ -75,6 +87,17 @@ class App extends Component {
 		  )
   }
 
+  logout(){
+    this.setState({
+      authenticated: false,
+      username: "user",
+      password: "user",
+      role: "",
+      token: "",
+      cart: []
+    });
+  }
+
   render() {
 
     let category_names = this.state.categories.map(( entity, index ) => {
@@ -86,21 +109,32 @@ class App extends Component {
     return (
       <div className="App">
         <Router>
-          <div>
-              <Navbar bg="light" expand="lg">
+            <div className="header">
+              <Navbar expand="lg">
                 {/* <Navbar.Brand href="/">Home</Navbar.Brand> */}
                 <Link to="/">Home</Link>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="mr-auto">
-                    <Link to="/admin">Admin panel</Link>
-                    <Link to="/settings">User settings</Link>
-                    <Link to="/orders">Orders</Link>
-                    {/* <Nav.Link href="#link">Link1</Nav.Link>
-                    <Nav.Link href="#link">Link2</Nav.Link>
-                    <Nav.Link href="#link">Link3</Nav.Link>
-                    <Nav.Link href="#link">Link4</Nav.Link>
-                    <Nav.Link href="#link">Link5</Nav.Link> */}
+                    
+                    
+
+                    {this.state.role === "admin" ? (
+                      <div>
+                        <Link to="/admin">Admin panel</Link>
+                      </div>
+                    ):( <span></span>)
+                    }
+
+                    {this.state.role === "user" ? (
+                      <div>
+                        <Link to="/orders">Orders</Link>
+                        <Link to="/settings">User settings</Link>
+                      </div>
+                    ):( <span></span>)
+                    }
+
+
                   </Nav>
                   <Form inline>
 
@@ -112,78 +146,92 @@ class App extends Component {
                       unauth
                     </div>)
                     }
-
-                    {/* <Navbar.Collapse id="basic-navbar-nav">
-                      <Nav className="mr-auto">
-                        <Nav.Link href="/cart">Cart</Nav.Link>
-                        <Nav.Link href="/login">Login</Nav.Link>
-                        <Nav.Link href="/register">Register</Nav.Link>
-                      </Nav>
-                    </Navbar.Collapse> */}
-
+                    {this.state.authenticated ? (<div>
+                      <Link to="/logout" onClick={this.logout} >Log out</Link>
+                    </div>
+                    ):(
+                    <div>
+                      <Link to="/login">Login</Link>
+                    </div>)
+                    }
                     <Link to="/cart">Cart</Link>
-                    <Link to="/login">Login</Link>
+
                     <Link to="/register">Register</Link>
-                    
                     <FormControl type="text" placeholder="Search" className="mr-sm-2" />
                     <Button variant="outline-success">Search</Button>
                   </Form>
                 </Navbar.Collapse>
               </Navbar>
+            </div>
+
     
-              <Breadcrumb>
-                <Breadcrumb.Item href="#">Home</Breadcrumb.Item>
-                <Breadcrumb.Item href="#">
-                  Link
-                </Breadcrumb.Item>
-                <Breadcrumb.Item active>Data</Breadcrumb.Item>
-              </Breadcrumb>
-    
-            <Row>
-              <Col sm={4}>
-                  <Container>
-                    <div className="left_div">
-                      <ul>
-                        {category_names}
-                      </ul>
-                    </div>
-                  </Container>
-              </Col>
-              <Col sm={8}>
-                <Switch>
-                  <Route exact path='/' render={(props) => <Home {...props} callbackFromApp={this.homeCallback} />} />
-                  <Route exact path='/login' render={(props) => <Login {...props} isAuthed={"abcdefgh"} callbackFromApp={this.loginCallback} />} />
-                  {/* <Route path='/cart' component={Cart} /> */}
-                  <Route exact path='/cart' render={(props) => <Cart {...props} cart={this.state.cart} />} />
-                  <Route exact path='/register' component={Register} />
-                  <Route exact path='/orders' component={Orders} />
-                  <Route exact path='/settings' component={Settings} />
-                  <Route exact path='/admin' component={Admin} />
-                </Switch>
-              </Col>
-            </Row>
+              <div className="main">
+                <Row>
+                  <Col sm={3}>
+                      <Container>
+                        <div className="left_div">
+                          <ul>
+                            {category_names}
+                          </ul>
+                        </div>
+                      </Container>
+                  </Col>
+                  <Col sm={9}>
+                    <Switch>
+                      <Route exact path='/' render={(props) => <Home {...props} callbackFromApp={this.homeCallback} />} />
+                      <Route exact path='/login' render={(props) => <Login {...props} isAuthed={"abcdefgh"} callbackFromApp={this.loginCallback} />} />
+                      <Route exact path='/cart' render={(props) => <Cart {...props} cart={this.state.cart} />} />
+                      <Route exact path='/register' component={Register} />
+                      <Route exact path='/orders' component={Orders} />
+                      <Route exact path='/settings' component={Settings} />
+                      <Route exact path='/admin' component={Admin} />
+                      <Route exact path='/addproduct' component={AddProduct}  />
+                      <Route exact path='/addcategory' component={AddCategory} />
+                    </Switch>
+                  </Col>
+                </Row>
+              </div>
+
+
+          <div className="newsletter_div">
+            <Newsletter />
           </div>
 
           <div className="footer_div">
-            <Navbar  expand="lg">
-              <Navbar.Brand href="#">Home</Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-              <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
-                  {/* <Nav.Link href="#home">Home</Nav.Link> */}
-
-
-
-                  <Nav.Link href="#link">Link1</Nav.Link>
-                  <Nav.Link href="#link">Link2</Nav.Link>
-                  <Nav.Link href="#link">Link3</Nav.Link>
-                  <Nav.Link href="#link">Link4</Nav.Link>
-                  <Nav.Link href="#link">Link5</Nav.Link>
-    
-                </Nav>
-    
-              </Navbar.Collapse>
-            </Navbar>
+            <div className="footer_content">
+              <Row>
+                <Col sm={3}>
+                  <h5>Obsługa klienta</h5>
+                  <ul>
+                    <li>link</li>
+                    <li>link</li>
+                    <li>link</li>
+                    <li>link</li>
+                  </ul>
+                </Col>
+                <Col sm={3}>
+                  <h5>Twoje konto</h5>
+                  <ul>
+                    <li>link</li>
+                    <li>link</li>
+                    <li>link</li>
+                    <li>link</li>
+                  </ul>      
+                </Col>
+                <Col sm={3}>
+                  <h5>Shop</h5>
+                  <ul>
+                    <li>link</li>
+                    <li>link</li>
+                    <li>link</li>
+                    <li>link</li>
+                  </ul>
+                </Col>
+                <Col sm={3}>
+                  <h5>Kontakt</h5>
+                </Col>
+              </Row>
+            </div>
           </div>  
         </Router>
       </div>
